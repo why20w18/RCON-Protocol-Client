@@ -1,0 +1,39 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "/usr/include/wx-3.2",
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/include",
+                "/usr/lib/wx/include/gtk3-unicode-3.2"
+            ],
+            "defines": [],
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "linux-clang-x64",
+            "compilerPath": "/usr/bin/g++",
+            "configurationProvider": "ms-vscode.cmake-tools"
+        },
+        {
+            "name": "Windows",
+            "includePath": [
+                "/home/archw/packs/project/MinecraftRCON/**"
+            ],
+            "defines": [],
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "windows-clang-x64",
+            "mergeConfigurations": false,
+            "compilerPath": "/usr/bin/g++",
+            "browse": {
+                "path": [
+                    "/home/archw/packs/project/MinecraftRCON/**",
+                    "${workspaceFolder}"
+                ],
+                "limitSymbolsToIncludedHeaders": true
+            }
+        }
+    ],
+    "version": 4
+}
