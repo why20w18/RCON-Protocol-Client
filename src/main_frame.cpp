@@ -13,7 +13,7 @@ main_frame::main_frame(int pGenislik , int pYukseklik , const char *pAdi)
     const char **ptr2 = sekmeKisayol;
 
     int sekmeFuncs[] = {MENUSF_TANIMSIZ_BIR,MENUSF_TANIMSIZ_IKI};
-    this->setMenuSekme1("C319",2,ptr1,ptr2,sekmeFuncs);
+    this->addMenuSekme("C319",2,ptr1,ptr2,sekmeFuncs);
 
     wxButton *btn_testButonu1 = new wxButton(this,BUTTONSF_TANIMSIZ_BIR,"TEST_BUTTON_1");
     wxButton *btn_testButonu2 = new wxButton(this,BUTTONSF_TANIMSIZ_IKI,"TEST_BUTTON_2");

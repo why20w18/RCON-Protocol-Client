@@ -5,7 +5,7 @@ pencere_frame::pencere_frame(int pencereGenislik , int pencereYukseklik , const 
 :wxFrame(nullptr,wxID_ANY,pencereAdi,wxDefaultPosition,wxDefaultSize) 
 {   
     CenterOnScreen();
-    SetMinSize(wxSize(pencereGenislik/2,pencereYukseklik/2));
+    SetMinSize(wxSize(pencereGenislik-100,pencereYukseklik-200));
     SetMaxSize(wxSize(pencereGenislik+200,pencereYukseklik+200));
 
     this->pencereAdi = pencereAdi;
@@ -39,22 +39,6 @@ void pencere_frame::OnExit(wxCloseEvent &e){
 }
 
 //METODLAR//
-wxMenu* pencere_frame::setMenuSekme1(const char *sekmeAdi,int sekmeMenuSayisi,const char **sekmeMenuAdlari,
-                                     const char **sekmeKisayolTuslari,int *sekmeFonksiyonlari){
-    wxMenu *menuMenu = new wxMenu;
-    
-    for(int i = 0 ; i < sekmeMenuSayisi ; i++){
-        menuMenu->Append(sekmeFonksiyonlari[i],"&"+std::string(sekmeMenuAdlari[i])+"\t"+std::string(sekmeKisayolTuslari[i]));
-
-    }
-
-    wxMenuBar *menuBar = new wxMenuBar;
-    menuBar->Append(menuMenu,"&"+std::string(sekmeAdi));
-    SetMenuBar(menuBar);
-
-    return menuMenu;
-}
-
 void pencere_frame::componentPositioner(wxWindow *object,COMP_POSITION pos,int margin){
     switch(pos){
         case UST:
@@ -118,4 +102,20 @@ int pencere_frame::getPencereYukseklikSetted(){
 
 const char* pencere_frame::getPencereAd(){
     return this->pencereAdi;
+}
+
+//COMPONENT EKLEMEYI KOLAYLASTIRICI METODLAR//
+wxMenu* pencere_frame::addMenuSekme(const char *sekmeAdi,int sekmeMenuSayisi,const char **sekmeMenuAdlari,
+                                     const char **sekmeKisayolTuslari,int *sekmeFonksiyonlari){
+    wxMenu *menuMenu = new wxMenu;
+    
+    for(int i = 0 ; i < sekmeMenuSayisi ; i++){
+        menuMenu->Append(sekmeFonksiyonlari[i],"&"+std::string(sekmeMenuAdlari[i])+"\t"+std::string(sekmeKisayolTuslari[i]));
+    }
+
+    wxMenuBar *menuBar = new wxMenuBar;
+    menuBar->Append(menuMenu,"&"+std::string(sekmeAdi));
+    SetMenuBar(menuBar);
+
+    return menuMenu;
 }

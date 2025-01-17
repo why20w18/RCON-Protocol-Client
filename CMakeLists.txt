@@ -5,8 +5,12 @@ SET(CMAKE_CXX_STANDARD_REQUIRED YES)
 
 #PLATFORM AYARLARI:
 #GEREKLI DIS KUTUPHANELER ASAGIDADIR
-#-> wxWidgets
-#-> sqlite3
+#-> wxWidgets   (grafik arayuz)
+#-> Sqlite3     (onemli verileri saklamak icin veritabani baglantisi)
+#-> Boost       (network programlama)
+
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=x86-64 -mtune=generic")
 
 if(WIN32)
                           #mingw ile derlenmis wxWidgets kutuphanesi readme.md (bknz:TEKNIK-1)
@@ -51,6 +55,7 @@ if(WIN32)
 elseif(UNIX)
     find_package(wxWidgets REQUIRED COMPONENTS core base)
     find_package(SQLite3 REQUIRED)
+    find_package(Boost REQUIRED)
     include(${wxWidgets_USE_FILE})
 endif()
 
@@ -62,9 +67,14 @@ SET(DIZIN_INCLUDE ${CMAKE_SOURCE_DIR}/include)
 SET(
     PROGRAM_SRC 
     ${DIZIN_SRC}/main.cpp
-    ${DIZIN_SRC}/main_frame.cpp
     ${DIZIN_SRC}/window.cpp
+    ${DIZIN_SRC}/login_frame.cpp
+    ${DIZIN_SRC}/main_frame.cpp
     ${DIZIN_SRC}/dbProcess.cpp
+    ${DIZIN_SRC}/rcon.cpp
+
+   
+    
 
     
 )
@@ -72,11 +82,13 @@ SET(
 #PROGRAM DOSYALARINI AYARLAMA: HEADER
 SET(
     PROGRAM_INCLUDE
-    ${DIZIN_INCLUDE}/funcEnums.hpp
-    ${DIZIN_INCLUDE}/main_frame.hpp
     ${DIZIN_INCLUDE}/window.hpp
+    ${DIZIN_INCLUDE}/login_frame.hpp
+    ${DIZIN_INCLUDE}/main_frame.hpp
+    ${DIZIN_INCLUDE}/funcEnums.hpp
     ${DIZIN_INCLUDE}/dbConnector.hpp
     ${DIZIN_INCLUDE}/rcon.hpp
+    
     
     
     )
@@ -104,6 +116,7 @@ elseif(UNIX)
         ${PROGRAM_INCLUDE} 
         ${wxWidgets_INCLUDE_DIRS} 
         ${SQLite3_INCLUDE_DIRS}
+        ${Boost_INCLUDE_DIRS}
         )
     
     add_executable(
@@ -115,6 +128,7 @@ elseif(UNIX)
         ${PROJECT_NAME}
         ${wxWidgets_LIBRARIES}
         ${SQLite3_LIBRARIES}
+        ${Boost_LIBRARIES}
           )
 
 endif()
