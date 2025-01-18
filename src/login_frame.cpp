@@ -36,7 +36,7 @@ login_frame::~login_frame(){
 void login_frame::slot_validater(wxTextCtrl *txtcVerisi,std::string rconPass){
     this->hamachiHostAdresi = txtcVerisi->GetValue().ToStdString();
     std::cout << "MEVCUT HAMACHI HOST : " << hamachiHostAdresi << "\n";
-    boost::asio::io_service ioserv;
+    boost::asio::io_context ioserv;
     client = new rconClient(ioserv,this->hamachiHostAdresi,25575);
     
     if(client->rconConnect()){

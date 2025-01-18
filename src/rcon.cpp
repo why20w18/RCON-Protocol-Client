@@ -1,6 +1,6 @@
 #include "../include/rcon.hpp"
 
-rconClient::rconClient(boost::asio::io_service &ioserv, const std::string &rconHost , short rconPort)
+rconClient::rconClient(boost::asio::io_context &ioserv, const std::string &rconHost , short rconPort)
 : rconSocket(ioserv) , rconHost(rconHost) , rconPort(rconPort)
 {    
     std::cout << "--->RCON CONSTRUCTOR\n";
@@ -9,7 +9,8 @@ rconClient::rconClient(boost::asio::io_service &ioserv, const std::string &rconH
 bool rconClient::rconConnect(){
     try{
         tcp::resolver rconResolver(rconSocket.get_executor());
-        auto rconEndPointIterator = rconResolver.resolve({rconHost,std::to_string(rconPort)});
+        auto rconEndPointIterator = rconResolver.resolve(rconHost, std::to_string(rconPort));
+
 
         for (auto& endpoint : rconEndPointIterator) {
             std::cout << "Trying endpoint: " << endpoint.endpoint() << "\n";

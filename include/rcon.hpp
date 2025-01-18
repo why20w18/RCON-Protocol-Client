@@ -3,9 +3,12 @@
 
 #include "funcEnums.hpp"
 
+#include <boost/asio/io_context.hpp>
 #include <boost/asio.hpp>
+
 #include <iostream>
 #include <string>
+
 
 using boost::asio::ip::tcp;
 
@@ -23,7 +26,7 @@ private:
     short rconPort;
 
 public:
-    rconClient(boost::asio::io_service &ioserv, const std::string &rconHost , short rconPort);
+    rconClient(boost::asio::io_context &ioserv, const std::string &rconHost , short rconPort);
     bool rconConnect();
     bool rconValidate(const std::string &password); 
     void rconExecuteCommand(const std::string &sendedCommand);

@@ -6,11 +6,12 @@ SET(CMAKE_CXX_STANDARD_REQUIRED YES)
 #PLATFORM AYARLARI:
 #GEREKLI DIS KUTUPHANELER ASAGIDADIR
 #-> wxWidgets   (grafik arayuz)
-#-> Sqlite3     (onemli verileri saklamak icin veritabani baglantisi)
-#-> Boost       (network programlama)
+#-> Sqlite3     (onemli verileri saklamak icin veritabani baglantisi + java plugin uzerinden)
+#-> Boost       (network programlama icin asio + windows icin winsock2)
 
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=x86-64 -mtune=generic")
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=x86-64 -mtune=generic")
+cmake_policy(SET CMP0167 NEW)
 
 if(WIN32)
                           #mingw ile derlenmis wxWidgets kutuphanesi readme.md (bknz:TEKNIK-1)
@@ -52,6 +53,22 @@ if(WIN32)
     set(SQLITE3_LIBRARIES ${SQLITE3_LIB_DIR}/libsqlite3.a)
 
 
+    set(BOOST_ROOT "/home/archw/boost_build")
+    set(CMAKE_PREFIX_PATH ${BOOST_ROOT})
+    set(BOOST_INCLUDE_DIR ${BOOST_ROOT}/include)
+    set(BOOST_LIBRARY_DIR ${BOOST_ROOT}/lib)
+    
+    include_directories(${BOOST_INCLUDE_DIR})   
+    link_directories(${BOOST_LIBRARY_DIR})
+    
+    find_package(Boost 1.87.0 REQUIRED COMPONENTS system thread
+    PATHS "/home/archw/boost_build"
+    NO_DEFAULT_PATH)
+
+    
+
+
+    
 elseif(UNIX)
     find_package(wxWidgets REQUIRED COMPONENTS core base)
     find_package(SQLite3 REQUIRED)
@@ -108,7 +125,11 @@ if(WIN32)
         ${PROJECT_NAME}
         ${wxWidgets_LIBRARIES}
         ${SQLITE3_LIBRARIES}
+        Boost::system
+        Boost::thread
+        ws2_32
         )
+
 
 
 elseif(UNIX)
