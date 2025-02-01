@@ -1,4 +1,4 @@
-#include "../include/rcon.hpp"
+#include "../../include/rcon.hpp"
 
 rconClient::rconClient(boost::asio::io_context &ioserv, const std::string &rconHost , short rconPort)
 : rconSocket(ioserv) , rconHost(rconHost) , rconPort(rconPort)

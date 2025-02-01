@@ -5,7 +5,7 @@ class MyApp : public wxApp
 {
 public:
     bool OnInit() override{
-        login_frame *frame = new login_frame(400,600,"C319-RCON | GIRIS");
+        login_frame *frame = new login_frame(400,600,"MINECRAFT RCON CLIENT | GIRIS");
         frame->Show();
         return true;
     }

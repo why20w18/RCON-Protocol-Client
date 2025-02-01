@@ -1,4 +1,4 @@
-#include "../include/main_frame.hpp"
+#include "../../include/main_frame.hpp"
 
 main_frame::main_frame(int pGenislik , int pYukseklik , const char *pAdi)
 : pencere_frame(pGenislik,pYukseklik,pAdi)

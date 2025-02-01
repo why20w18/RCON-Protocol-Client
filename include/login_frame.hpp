@@ -3,13 +3,15 @@
 
 #include "window.hpp"
 #include "rcon.hpp"
+#include "configParser.hpp"
+
 #include <string>
 
 class login_frame : public pencere_frame{
 private:
     std::string oyuncuAdi;
     std::string oyuncuParola;
-    std::string hamachiHostAdresi;
+    std::string serverHostIP;
     rconClient *client;
     
     //SLOTLAR//
