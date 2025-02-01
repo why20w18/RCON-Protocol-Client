@@ -3,9 +3,11 @@ build/
 build-win32/
 sqlite3_WIN32/
 win32-dll/
+utils-WIN32/
 cUnix.sh
 cWin32.sh
 rUnix.sh
 rWin32.sh
 README.md
 PROGRAM_AKIS.txt
+
