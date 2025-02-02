@@ -29,6 +29,14 @@ cr-WIN32.sh run
 
 
 ## RCON Protocol paketinin oluşturulması
+RCON Protokolünün implementasyonu rcon.hpp/rcon.cpp dosyasında manuel yapılmıştır , protokolü
+özelleştirerek Minecraft dışında diğer RCON kullanan uygulamalarla da çalıştırılabilir hale 
+getirilebilir
+
+### Kullanılan kaynaklar
+[Minecraft Wiki RCON](https://minecraft.wiki/w/RCON)
+
+[Valve Source RCON Protocol](https://developer.valvesoftware.com/wiki/Source_RCON_Protocol)
 
 
 | Alan adı          | Alan türü         | Açıklamalar   |
@@ -38,3 +46,40 @@ cr-WIN32.sh run
 | Type              | int32             | Paketin gönderilme amacını içeren kısım , 3=RCON parola doğrulama , 2=server üzerinde komut çalıştırma|
 | Payload           | byte[]            | Asıl verinin taşındığı kısımdır örneğin RCON parolası veya çalıştırılacak komut buradadır (payloadByte+1) null karakterle biter|
 | Pad               | byte              | Bellek hizalama için kullanılan 1 byte null karakter|
+
+
+
+## Kullanılan çapraz platform kütüphaneler
+
+
+| Kütüphaneler      | Kullanım Amacı                               |
+| -------------     | -------------                                |
+| wxWidgets         | platform bağımsız gui oluşturmak için kullanıldı| 
+| Boost:Asio        | platform bağımsız io işlemlerini oluşturmak için kullanıldı|
+| sqlite3           | cmake konfigürasyonu oluşturuldu fakat kullanılmadı|
+
+
+## Eklemeler ve düzeltmeler
+
+>
+ + configParser.cpp/configParser.hpp settings.cfg dosyasından otomatik okuma yaparak doğrudan REMOTE CONTROL penceresini başlatabilmelidir
+ + serverdan gelen uzun yanıtlar tam olarak GUI üzerinde gösterilemiyor düzeltilmeli
+ + ayarlar kısmı eklenerek özelleştirmeler yapılabilmelidir
+
+
+## Screenshot
+
+![1](screenshot/1.png)
+
+## 
+
+![2](screenshot/2.png)
+
+## 
+
+![3](screenshot/3.png)
+
+## 
+
+![4](screenshot/4.png)
+
