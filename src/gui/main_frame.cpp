@@ -77,9 +77,9 @@ void main_frame::slot_sendCommand(wxCommandEvent &e,const std::string &command,w
 }
 
 void main_frame::slot_github(wxCommandEvent &e){
-    this->warnMSG("https://github.com/why20w18/RemoteControlClient adresinden projeye destekte bulunabilirsiniz","Github");
+    this->warnMSG("https://github.com/why20w18/RCON-Protocol-Client adresinden projeye destekte bulunabilirsiniz","Github");
 }
 
 void main_frame::slot_issuesProblemReport(wxCommandEvent &e){
-    this->warnMSG("https://github.com/why20w18/RemoteControlClient/issues/ adresinden projedeki hatalari bildirebilirsiniz","Report");
+    this->warnMSG("https://github.com/why20w18/RCON-Protocol-Client/issues adresinden projedeki hatalari bildirebilirsiniz","Report");
 }

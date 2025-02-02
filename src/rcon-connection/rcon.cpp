@@ -109,7 +109,7 @@ std::string remoteControl::runCommand(const std::string &command){
         const uint32_t packetSize = 12 + (command.length()+1) +1;
         std::vector<char> packet(packetSize);
 
-        createPacket_RCON(packet.data(),requestID,command,false);
+        createPacket_RCON(packet.data(),++requestID,command,false);
 
         if(!sendPacket_RCON(packet.data(),packetSize)){
             throw std::runtime_error("RUN_COMMAND : PAKET GONDERILEMEDI");
