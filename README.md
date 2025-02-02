@@ -31,7 +31,7 @@ cr-WIN32.sh run
 ## RCON Protocol paketinin oluşturulması
 RCON Protokolünün implementasyonu rcon.hpp/rcon.cpp dosyasında manuel yapılmıştır , protokolü
 özelleştirerek Minecraft dışında diğer RCON kullanan uygulamalarla da çalıştırılabilir hale 
-getirilebilir
+getirilebilirsiniz
 
 ### Kullanılan kaynaklar
 [Minecraft Wiki RCON](https://minecraft.wiki/w/RCON)
