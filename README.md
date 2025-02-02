@@ -55,7 +55,7 @@ getirilebilirsiniz
 | Kütüphaneler      | Kullanım Amacı                               |
 | -------------     | -------------                                |
 | wxWidgets         | platform bağımsız gui oluşturmak için kullanıldı| 
-| Boost:Asio        | platform bağımsız io işlemlerini oluşturmak için kullanıldı|
+| Boost::Asio        | platform bağımsız io işlemlerini oluşturmak için kullanıldı|
 | sqlite3           | cmake konfigürasyonu oluşturuldu fakat kullanılmadı|
 
 
