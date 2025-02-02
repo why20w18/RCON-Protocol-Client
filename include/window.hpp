@@ -22,8 +22,7 @@ private:
     pencere_frame *ustPencere;
     wxBoxSizer *pencereSizer; 
 
-    //SLOTLAR//
-    void OnExit(wxCloseEvent &e);
+
 
 
 public:
@@ -35,7 +34,9 @@ public:
 
 
 protected:
+    //SLOTLAR//
 
+    //SLOTLAR//
 
     int* getPencereGenislikYukseklikNow();
     int getPencereGenislikSetted();

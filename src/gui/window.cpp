@@ -18,7 +18,6 @@ pencere_frame::pencere_frame(int pencereGenislik, int pencereYukseklik,const cha
   this->pencereSizer = new wxBoxSizer(wxVERTICAL);
   SetSizer(this->pencereSizer);
 
-  Bind(wxEVT_CLOSE_WINDOW, &pencere_frame::OnExit, this);
 }
 
 // alt pencere olustururken kullanilir
@@ -30,13 +29,12 @@ pencere_frame::pencere_frame(int pencereGenislik, int pencereYukseklik,const cha
 
   if(!DEFAULT_HOST_NO)
     SetBackgroundColour(*wxWHITE);
+
 }
 
 // destructor
 pencere_frame::~pencere_frame() {}
 
-// SLOTLAR//
-void pencere_frame::OnExit(wxCloseEvent &e) { this->Destroy(); }
 
 // METODLAR//
 void pencere_frame::lockWindowSize(LOCK_WINDOW_PARAMS lockParams){
@@ -150,3 +148,4 @@ wxMenu *pencere_frame::addMenuSekme(const char *sekmeAdi, int sekmeMenuSayisi,
 }
 
 //(2)
+

@@ -1,67 +1,131 @@
 #include "../../include/rcon.hpp"
 
-rconClient::rconClient(boost::asio::io_context &ioserv, const std::string &rconHost , short rconPort)
-: rconSocket(ioserv) , rconHost(rconHost) , rconPort(rconPort)
-{    
-    std::cout << "--->RCON CONSTRUCTOR\n";
-}
+remoteControl::remoteControl(const std::string &server_ip , uint32_t server_port , const std::string &rcon_pass , uint32_t rcon_port)
+: server_ip(server_ip) , server_port(server_port) , rcon_pass(rcon_pass) , rcon_port(rcon_port){
+    rconAuthSuccess = false;
 
-bool rconClient::rconConnect(){
     try{
-        tcp::resolver rconResolver(rconSocket.get_executor());
-        auto rconEndPointIterator = rconResolver.resolve(rconHost, std::to_string(rconPort));
+        //KALICI BAGLANTIYI SAGLAMA//
+        this->io_context = make_unique<boost::asio::io_context>();
+        this->socket = make_unique<ip::tcp::socket>(*io_context);
+        this->resolver = make_unique<ip::tcp::resolver>(*io_context);
+        
 
+        auto endpoint = resolver->resolve(server_ip,std::to_string(rcon_port));
+        boost::asio::connect(*socket,endpoint);
 
-        for (auto& endpoint : rconEndPointIterator) {
-            std::cout << "Trying endpoint: " << endpoint.endpoint() << "\n";
+        const int packetSize = 12 + (rcon_pass.length()+1) + 1;
+        std::vector<char> loginPacket(packetSize);
+
+        createPacket_RCON(loginPacket.data(),1,rcon_pass,true);
+        sendPacket_RCON(loginPacket.data(),packetSize);
+
+        std::vector<char> response(4096);
+        if(!recvPacket_RCON(response.data())){
+            throw std::runtime_error("RCON DOGRULAMASI HATALI BASARISIZ !");
         }
 
-        boost::asio::connect(rconSocket,rconEndPointIterator);
+        uint32_t requestID = *reinterpret_cast<uint32_t*>(response.data()+4); //4.bytedan itibaren request id 4-8
+        if(requestID == -1){
+            throw std::runtime_error("GECERSIZ RCON PAROLASI");
+        }
+            
 
-        return true;
+        cout << "RCON BAGLANTISI BASARIYLA SAGLANDI !\n";
+        rconAuthSuccess = true;
+
     }
-    catch(std::exception &e){
-        std::cout << "CONNECTION FAILED : " << e.what() << "\n";
+    catch(exception &ex){
+        cerr << "REMOTE CONTROL CONSTRUCTOR ERR : " << ex.what() << endl;
+        rconAuthSuccess = false;
+    }
+}
+
+void remoteControl::createPacket_RCON(char *packet,int requestID,const std::string &payload,bool isAuthRequest){
+    
+    int lengthByte = RCON_PACKET_FIELD_REQUEST_ID + RCON_PACKET_FIELD_TYPE + (payload.length()+1) + RCON_PACKET_FIELD_PAD;
+    //4+4+(payload+1)+1
+
+
+    *reinterpret_cast<uint32_t*>(packet) = lengthByte;                                      //LENGTH// 
+    *reinterpret_cast<uint32_t*>(packet+4) = requestID;                                     //REQUEST-ID//
+    *reinterpret_cast<uint32_t*>(packet+8) = isAuthRequest ? RCON_PACKET_FIELD_TYPE_LOGIN   //TYPE//
+                                                           : RCON_PACKET_FIELD_TYPE_RUN_COMMAND;
+
+    //PAYLOAD//
+    memcpy((packet+12),payload.c_str(),payload.length());
+    packet[12 + payload.length()] = '\0';
+
+    //PAD//
+    packet[12 + payload.length()+1] = '\0';
+
+}
+
+
+bool remoteControl::sendPacket_RCON(const char *packet,uint32_t packetSize){
+
+    try{
+            if(!socket->is_open()){
+                throw std::runtime_error("[ERROR] SOKET KAPALIDIR PAKET GONDERILEMEZ");
+            }
+
+            boost::asio::write(*socket,boost::asio::buffer(packet,packetSize));
+            return true;
+        }
+    catch(exception &ex){
+        cerr << "SEND_PACKET_RCON ERR : " << ex.what() << endl;
         return false;
     }
 }
 
-bool rconClient::rconValidate(const std::string &password) {
-    const size_t paketSize = RCON_HEADER_SIZE + password.size() + 1;
-    std::vector<char> req_ParolaDogrulama(paketSize);
+bool remoteControl::recvPacket_RCON(char *response){
+    try{
+        //paket boyutunu okuma
+        uint32_t lengthSection;
+        boost::asio::read(*socket,boost::asio::buffer(&lengthSection,4));
+        cout << "GELEN PAKET BOYUTU : " << lengthSection << endl;
 
-    memset(req_ParolaDogrulama.data(), 0, req_ParolaDogrulama.size());
-
-    req_ParolaDogrulama[0] = 1;                  // req_id
-    req_ParolaDogrulama[1] = RCON_AUTH_COMMAND; // command type
-    req_ParolaDogrulama[RCON_HEADER_SIZE + password.size()] = '\0'; // Null terminator
-
-    // Paket hazırlanıyor
-    memcpy(req_ParolaDogrulama.data() + RCON_HEADER_SIZE, password.c_str(), password.size());
-
-    // Paket gönderiliyor
-    boost::asio::write(rconSocket, boost::asio::buffer(req_ParolaDogrulama));
-
-    return true;
-}
-
-
- void rconClient::rconExecuteCommand(const std::string& command) {
-    const size_t paketSize = RCON_HEADER_SIZE+command.size()+1;
-    std::vector<char> req_CommandSender(paketSize);
-    
-    memset(req_CommandSender.data(),0,req_CommandSender.size());
-    
-        // Başlık (ID, komut tipi, vb.)
-        req_CommandSender[0] = 0;                   // Request ID
-        req_CommandSender[1] = RCON_EXEC_COMMAND;   // Komut tipi (execute command)
-        req_CommandSender[2] = 0;                   // Hata kodu
-        req_CommandSender[3] = 0;                   // Hata kodu
-
-        // Komutu ekleme
-        std::memcpy(req_CommandSender.data() + RCON_HEADER_SIZE, command.c_str(), command.size());
-
-        // RCON komutunu gönderme
-        boost::asio::write(rconSocket, boost::asio::buffer(req_CommandSender));
+////
+        boost::asio::read(*socket,boost::asio::buffer(response+4,lengthSection));
+        *reinterpret_cast<uint32_t*>(response) = lengthSection;
+        
+        return true;
 
     }
+    catch(exception &ex){
+        cerr << "RECV_PACKET_RCON ERR : " << ex.what() << endl;
+        return false;
+    }
+
+}
+
+bool remoteControl::isRconAuthSuccess(){
+    return this->rconAuthSuccess;
+}
+
+std::string remoteControl::runCommand(const std::string &command){
+    try{
+        static int requestID = 2;
+    
+        const uint32_t packetSize = 12 + (command.length()+1) +1;
+        std::vector<char> packet(packetSize);
+
+        createPacket_RCON(packet.data(),requestID,command,false);
+
+        if(!sendPacket_RCON(packet.data(),packetSize)){
+            throw std::runtime_error("RUN_COMMAND : PAKET GONDERILEMEDI");
+        }
+
+        std::vector<char> response(4096);
+
+        if(!recvPacket_RCON(response.data())){
+            throw std::runtime_error("RUN_COMMAND : PAKET ICERIGI ALINAMADI");
+        }
+
+        return std::string(response.data()+12);
+    }
+    catch(exception &er){
+        cerr << "HATA KOMUT ISLENEMEDI : " << er.what() << endl;
+        return "";
+    }
+}
