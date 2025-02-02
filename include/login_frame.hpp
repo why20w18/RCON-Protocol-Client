@@ -5,6 +5,8 @@
 #include "rcon.hpp"
 #include "main_frame.hpp"
 #include "configParser.hpp"
+#include "debug.hpp"
+
 
 #include <string>
 

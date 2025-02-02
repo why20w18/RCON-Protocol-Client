@@ -4,8 +4,8 @@ main_frame::main_frame(int pGenislik , int pYukseklik , const char *pAdi,remoteC
 : pencere_frame(pGenislik,pYukseklik,pAdi)
 {
     login_frame->Destroy();
-    std::cout << "main_frame" << std::endl;
-    this->lockWindowSize(LWP_LOCK_MAX100);
+    DEBUG_LOG("main_frame");
+    this->lockWindowSize(LWP_LOCK_MIN_MAX100);
     this->connectServerData = connectServerData;
 
     const char *sekmeAdlari[] = {"Github","Issues/Problem Report"};
@@ -14,49 +14,72 @@ main_frame::main_frame(int pGenislik , int pYukseklik , const char *pAdi,remoteC
     const char **ptr1 = sekmeAdlari;
     const char **ptr2 = sekmeKisayol;
 
-    int sekmeFuncs[] = {MENUSF_TANIMSIZ_BIR,MENUSF_TANIMSIZ_IKI};
+    int sekmeFuncs[] = {MENUSF_GITHUB,MENUSF_ISSUES_PROBLEM_REPORT};
     this->addMenuSekme("Help/Yardim",2,ptr1,ptr2,sekmeFuncs);
 
-    wxButton *btn_runCommand = new wxButton(this,BUTTONSF_TANIMSIZ_BIR,"Send Command");
-    wxButton *btn_testButonu2 = new wxButton(this,BUTTONSF_TANIMSIZ_IKI,"TEST_BUTTON_2");
-
-    componentPositioner(btn_runCommand,GENISLEYEN_SATIR);
-    componentPositioner(btn_testButonu2,GENISLEYEN_SATIRSUTUN);
-
     wxTextCtrl *txtc_komutKonsol = new wxTextCtrl(this,TEXTCTRLSF_TANIMSIZ_BIR,
-    wxT("Komutlari burada yazarak calistirabilirsiniz"),wxDefaultPosition,wxSize(750,250),wxTE_MULTILINE | wxTE_PROCESS_ENTER);
+    "RUN COMMAND:\n",wxDefaultPosition,wxDefaultSize,wxTE_MULTILINE | wxTE_PROCESS_ENTER);
+     
+    wxTextCtrl *txtc_responseREADONLY = new wxTextCtrl(this,TEXTCTRLSF_TANIMSIZ_BIR,wxT("SERVER RESPONSE:\n")
+    ,wxDefaultPosition,wxDefaultSize,wxTE_READONLY | wxTE_MULTILINE);
     
-    componentPositioner(txtc_komutKonsol,GENISLEYEN_SATIR);
+    
+    componentPositioner(txtc_responseREADONLY,GENISLEYEN_SATIRSUTUN);
+    componentPositioner(txtc_komutKonsol,GENISLEYEN_SATIRSUTUN);
 
 
     //SLOT BAGLANTI//
-    Bind(wxEVT_BUTTON,&main_frame::slot_testButton1,this,BUTTONSF_TANIMSIZ_BIR);
-    Bind(wxEVT_BUTTON,&main_frame::slot_testButton2,this,BUTTONSF_TANIMSIZ_IKI);
     Bind(wxEVT_CLOSE_WINDOW, &main_frame::slot_exit, this);
+ 
+    txtc_komutKonsol->Bind(wxEVT_TEXT_ENTER, 
+        [this, txtc_responseREADONLY, txtc_komutKonsol](wxCommandEvent &e){
+            std::string command = txtc_komutKonsol->GetValue().ToStdString();
 
+            if(command.length() == 0)
+                command = "BOS_KOMUT";
+
+            if(command.at(0) == '#'){
+                if(command == "#info"){
+                        txtc_responseREADONLY->SetValue(this->connectServerData->rconServerInfoStr());
+                        txtc_komutKonsol->Clear();
+                }
+                else
+                    command == "BOS_KOMUT";
+
+            }
+
+            else if(command.at(0) != '#'){
+                this->slot_sendCommand(e, command,txtc_responseREADONLY);
+                txtc_komutKonsol->Clear();
+            }
+});
+
+    Bind(wxEVT_MENU,&main_frame::slot_github,this,MENUSF_GITHUB);
+    Bind(wxEVT_MENU,&main_frame::slot_issuesProblemReport,this,MENUSF_ISSUES_PROBLEM_REPORT);
 }
 
+main_frame::~main_frame(){
+    delete this->connectServerData;
+    DEBUG_LOG("main_frame destructor");
+}
+
+
+
+//SLOT DEFINES//
 void main_frame::slot_exit(wxCloseEvent &e){
     this->Destroy();
 }
 
-
-main_frame::~main_frame(){
-    delete this->connectServerData;
-    cout << "main_frame destructor" << endl;
+void main_frame::slot_sendCommand(wxCommandEvent &e,const std::string &command,wxTextCtrl *readOnly){
+    DEBUG_LOG("slot_sendCommand & command : " << command);
+    std::string serverResponse = connectServerData->runCommand(command);
+    readOnly->SetValue("Gonderilen Komut -> "+command+"\n"+"Gelen Yanit <- "+serverResponse);
 }
 
-void main_frame::slot_testButton1(wxCommandEvent &event){
-    std::cout << "SLOT_TEST_BUTTON_1\n";
-    std::cout << "PAD = " << this->getPencereAd() << "\n";
-    std::string response = connectServerData->runCommand("say helloRCON");
-    cout << "SERVERDAN GELEN YANIT : " << response << endl;
+void main_frame::slot_github(wxCommandEvent &e){
+    this->warnMSG("https://github.com/why20w18/RemoteControlClient adresinden projeye destekte bulunabilirsiniz","Github");
 }
 
-
-DINAMIK_MEMORY void main_frame::slot_testButton2(wxCommandEvent &event){
-    std::cout << "SLOT_TEST_BUTTON_2\n";
-    int *pgy = getPencereGenislikYukseklikNow();
-    std::cout << "genislik = " << pgy[0] << " -- " << "yukseklik = " << pgy[1] << "\n";
-    delete pgy;
+void main_frame::slot_issuesProblemReport(wxCommandEvent &e){
+    this->warnMSG("https://github.com/why20w18/RemoteControlClient/issues/ adresinden projedeki hatalari bildirebilirsiniz","Report");
 }

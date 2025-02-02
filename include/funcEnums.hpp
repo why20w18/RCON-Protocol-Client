@@ -3,6 +3,7 @@
 
 #define DINAMIK_MEMORY
 
+
 enum COMP_POSITION{
     SOL,
     SAG,
@@ -19,6 +20,9 @@ enum MENUS_FUNC{
     MENUSF_TANIMSIZ_BIR = 1,
     MENUSF_TANIMSIZ_IKI = 2,
     MENUSF_TANIMSIZ_UC = 3,
+
+    MENUSF_GITHUB,
+    MENUSF_ISSUES_PROBLEM_REPORT
 };
 
 //buttonsf//

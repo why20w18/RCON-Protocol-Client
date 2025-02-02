@@ -59,7 +59,7 @@ void pencere_frame::lockWindowSize(LOCK_WINDOW_PARAMS lockParams){
       SetMaxSize(wxSize(pencereGenislik+100,pencereYukseklik+100));
       break;
     default:
-      std::cout << "LOCK WINDOW SIZE GECERSIZ ENUM SECENEGI\n";
+        DEBUG_LOG("LOCK WINDOW SIZE GECERSIZ ENUM SECENEGI");
   }
 }
 
@@ -89,7 +89,7 @@ void pencere_frame::componentPositioner(wxWindow *object, COMP_POSITION pos,
     pencereSizer->Add(object, 1, wxALL | wxEXPAND, margin);
     break;
   default:
-    std::cout << "GECERSIZ COMPONENT POZISYONLANDIRICISI\n";
+    DEBUG_LOG("GECERSIZ COMPONENT POZISYONLANDIRICISI");
     break;
   }
 }
@@ -148,4 +148,7 @@ wxMenu *pencere_frame::addMenuSekme(const char *sekmeAdi, int sekmeMenuSayisi,
 }
 
 //(2)
+void pencere_frame::warnMSG(const std::string &msg,const std::string &tittle){
+    wxMessageBox(msg, tittle, wxOK | wxICON_INFORMATION, this);
+}
 

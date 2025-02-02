@@ -1,0 +1,9 @@
+#ifdef DEBUG
+    #define DEBUG_LOG(x) std::cout << "[DEBUG-MODE] " << x << "\n"
+    #define LOGIN_FRAME_NAME "[DEBUG-MODE] REMOTE CONTROL CLIENT | LOGIN"
+    #define MAIN_FRAME_NAME "[DEBUG-MODE] REMOTE CONTROL KONSOL"
+#else 
+    #define DEBUG_LOG(x)
+    #define LOGIN_FRAME_NAME "REMOTE CONTROL CLIENT | LOGIN"
+    #define MAIN_FRAME_NAME "REMOTE CONTROL KONSOL"
+#endif 

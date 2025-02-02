@@ -69,12 +69,12 @@ void config_parser::readConfig(){
             setConfigSyntax(value);
             addConfigContentMap(key,value);
 
-            std::cout << "key : " << key << "  value : " << value << std::endl;
-
+            DEBUG_LOG("key : " << key << "  value : " << value);
         }
-        else
-            std::cout << "GECERSIZ CONFIG SYNTAX !\n";
-
+        else{
+            DEBUG_LOG("GECERSIZ CONFIG SYNTAX !");
+        }
+            
     }
 
     read_file.close();

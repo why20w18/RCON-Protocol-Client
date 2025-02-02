@@ -4,17 +4,17 @@
 login_frame::login_frame(int pGenislik , int pYukseklik , const char *pAd)
 :pencere_frame(pGenislik,pYukseklik,pAd)
 {
-    std::cout << "--->LOGIN_FRAME_INITALIZE\n";
+    DEBUG_LOG("--->LOGIN_FRAME_INITALIZE\n");
     this->client = nullptr;
     this->main_frame_window = nullptr;
 
     this->lockWindowSize(LWP_LOCK_MAX100);
 
     wxTextCtrl *txtc_serverHostIP = new wxTextCtrl(this,TEXTCTRLSF_LOGIN_SERVER_HOST_IP,"25.18.57.15");
-    wxTextCtrl *txtc_serverPort = new wxTextCtrl(this,TEXTCTRLSF_LOGIN_SERVER_HOST_PORT,"Server PortNo");
+    wxTextCtrl *txtc_serverPort = new wxTextCtrl(this,TEXTCTRLSF_LOGIN_SERVER_HOST_PORT,"25565");
     
-    wxTextCtrl *txtc_serverRconPort = new wxTextCtrl(this,TEXTCTRLSF_LOGIN_SERVER_RCON_PORT,"RCON PortNo");
-    wxTextCtrl *txtc_serverRconPassword = new wxTextCtrl(this,TEXTCTRLSF_LOGIN_SERVER_RCON_PASSWORD,"RCON Password",
+    wxTextCtrl *txtc_serverRconPort = new wxTextCtrl(this,TEXTCTRLSF_LOGIN_SERVER_RCON_PORT,"25575");
+    wxTextCtrl *txtc_serverRconPassword = new wxTextCtrl(this,TEXTCTRLSF_LOGIN_SERVER_RCON_PASSWORD,"rcon_pass",
     wxDefaultPosition,wxDefaultSize,wxTE_PASSWORD);
     
     componentPositioner(txtc_serverHostIP,GENISLEYEN_SATIR);
@@ -62,17 +62,14 @@ void login_frame::slot_exit(wxCloseEvent &e){
 
 void login_frame::slot_rconAuthValidate(wxCommandEvent &e,const std::string &hostIP,uint32_t rconPort , 
                                         const std::string &rconPass , uint32_t hostPort){
-    cout << "BUTONA TIKLANDI !\n";
-    cout << "Host IP: " << hostIP << endl;
-    cout << "RCON Port: " << rconPort << endl;
-    cout << "RCON Password: " << rconPass << endl;
-    cout << "Host Port: " << hostPort << endl;
-
+  
     client = new remoteControl(hostIP,hostPort,rconPass,rconPort);
 
     if(client->isRconAuthSuccess()){
         //yeni pencere gecis
-        cout << "RCON BAGLANTISI BASARILI OLDU YENI PENCERE BASLAT BUNU KAPAT\n";
+        
+        //client->rconServerInfo();
+
         config_parser *config = new config_parser("settings.cfg");
         config->updateConfig(CONFIG_SETTINGS_SERVER_IP,hostIP);
         config->updateConfig(CONFIG_SETTINGS_SERVER_PORT,std::to_string(hostPort));
@@ -81,12 +78,12 @@ void login_frame::slot_rconAuthValidate(wxCommandEvent &e,const std::string &hos
         config->writeConfig();
         
 
-        main_frame_window = new main_frame(750,500,"REMOTE CONTROL KONSOL",client,this);
+        main_frame_window = new main_frame(600,450,MAIN_FRAME_NAME,client,this);
         main_frame_window->Show(true);
         
     }
     else{
-        cout << "RCON BAGLANTISI BASARISIZ OLDU YENI PENCERE BASLATMA\n";
+        this->warnMSG("BU ADRES VE PORTTA BIR SERVER BULUNAMADI !","BAGLANTI HATASI");
         delete client;
     }
     

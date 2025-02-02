@@ -2,6 +2,7 @@
 #define __CONFIG_PARSER_HPP__
 
 #include "funcEnums.hpp"
+#include "debug.hpp"
 #include <iostream>
 #include <string>
 #include <fstream>

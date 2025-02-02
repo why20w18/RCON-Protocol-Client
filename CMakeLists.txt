@@ -7,9 +7,21 @@ SET(CMAKE_CXX_STANDARD_REQUIRED YES)
 cmake_policy(SET CMP0167 NEW)
 set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
 
-if(WIN32)
+#compile modlari release icin compiler optimizasyon seviyesi ayarlandi
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
 
-	#wxWidgets
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    add_definitions(-DDEBUG)
+endif()
+
+
+if(WIN32)
+    #GUI uygulamasi oldugunu belirtme 
+    #set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS")
+    
+
+    #wxWidgets
     set(wxWidgets_ROOT_DIR "./utils-WIN32/wxWidgetsWIN32")
     set(wxWidgets_INCLUDE_DIRS 
         "${wxWidgets_ROOT_DIR}/include/wx-3.3/" 
@@ -102,6 +114,8 @@ SET(
     ${DIZIN_INCLUDE}/dbConnector.hpp
     ${DIZIN_INCLUDE}/rcon.hpp
     ${DIZIN_INCLUDE}/configParser.hpp
+    ${DIZIN_INCLUDE}/debug.hpp
+    
 
     
     

@@ -4,6 +4,7 @@
 #include <wx/wx.h>
 #include <wx/sizer.h>
 #include "funcEnums.hpp"
+#include "debug.hpp"
 
 #ifdef __linux__
     #define DEFAULT_HOST_NO 1
@@ -53,6 +54,7 @@ protected:
     wxMenu* addMenuSekme(const char *sekmeAdi,int sekmeBarSayisi,const char **sekmeBarAdlari,
                           const char **sekmeKisayolTuslari,int *sekmeFonksiyonlari);    
     
+    void warnMSG(const std::string &msg,const std::string &tittle);
 
 };
 

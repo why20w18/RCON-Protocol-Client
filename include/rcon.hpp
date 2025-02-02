@@ -3,6 +3,7 @@
 #define __REMOTE_CONTROL_CLIENT__
 
 #include "funcEnums.hpp"
+#include "debug.hpp"
 #include <iostream>
 #include <string>
 #include <boost/asio.hpp>
@@ -43,8 +44,10 @@ public:
                   const std::string &rcon_pass , uint32_t rcon_port);
 
     std::string runCommand(const std::string &command);
-
     bool isRconAuthSuccess();
+
+    void rconServerInfo() const;
+    std::string rconServerInfoStr();
 };
 
 #endif 

@@ -30,13 +30,12 @@ remoteControl::remoteControl(const std::string &server_ip , uint32_t server_port
             throw std::runtime_error("GECERSIZ RCON PAROLASI");
         }
             
-
-        cout << "RCON BAGLANTISI BASARIYLA SAGLANDI !\n";
+        DEBUG_LOG("RCON BAGLANTISI BASARIYLA SAGLANDI !");
         rconAuthSuccess = true;
 
     }
     catch(exception &ex){
-        cerr << "REMOTE CONTROL CONSTRUCTOR ERR : " << ex.what() << endl;
+        DEBUG_LOG("REMOTE CONTROL CONSTRUCTOR ERR : " << ex.what());
         rconAuthSuccess = false;
     }
 }
@@ -73,7 +72,7 @@ bool remoteControl::sendPacket_RCON(const char *packet,uint32_t packetSize){
             return true;
         }
     catch(exception &ex){
-        cerr << "SEND_PACKET_RCON ERR : " << ex.what() << endl;
+        DEBUG_LOG("SEND_PACKET_RCON ERR : " << ex.what());
         return false;
     }
 }
@@ -83,7 +82,7 @@ bool remoteControl::recvPacket_RCON(char *response){
         //paket boyutunu okuma
         uint32_t lengthSection;
         boost::asio::read(*socket,boost::asio::buffer(&lengthSection,4));
-        cout << "GELEN PAKET BOYUTU : " << lengthSection << endl;
+        DEBUG_LOG("GELEN PAKET BOYUTU : " << lengthSection);
 
 ////
         boost::asio::read(*socket,boost::asio::buffer(response+4,lengthSection));
@@ -93,7 +92,7 @@ bool remoteControl::recvPacket_RCON(char *response){
 
     }
     catch(exception &ex){
-        cerr << "RECV_PACKET_RCON ERR : " << ex.what() << endl;
+        DEBUG_LOG("RECV_PACKET_RCON ERR : " << ex.what());
         return false;
     }
 
@@ -125,7 +124,28 @@ std::string remoteControl::runCommand(const std::string &command){
         return std::string(response.data()+12);
     }
     catch(exception &er){
-        cerr << "HATA KOMUT ISLENEMEDI : " << er.what() << endl;
+        DEBUG_LOG("HATA KOMUT ISLENEMEDI : " << er.what());
         return "";
     }
 }
+
+void remoteControl::rconServerInfo() const{
+        cout << "Server IP   : " << this->server_ip << endl;
+        cout << "Server Port : " << this->server_port << endl;
+        cout << "RCON Port   : " << this->rcon_port << endl;
+        cout << "RCON Auth   : " << ((this->rconAuthSuccess) ? "Oturum Yetkilendirildi" : "Oturum Yetkilendirilmedi !") << endl;
+}
+
+std::string remoteControl::rconServerInfoStr(){
+    string temp_s_servip = "Server IP: "+server_ip;
+    string temp_s_servPort = "Server Port: "+to_string(server_port);
+    string temp_s_rconPort = "RCON Port: "+to_string(rcon_port);
+    string temp_s_rconPass = "RCON Pass: "+rcon_pass;
+    string temp_s_auth = ((rconAuthSuccess) ? "Giris: Basarili" : "Giris: Basarisiz");
+    
+
+    return std::string("[RCON-SERVER-INFO]\n"+temp_s_servip+"\n"+temp_s_servPort+"\n"+
+    temp_s_rconPort+"\n"+temp_s_rconPass+"\n"+temp_s_auth+"\n");    
+}
+
+
