@@ -18,7 +18,7 @@ endif()
 
 if(WIN32)
     #GUI uygulamasi oldugunu belirtme 
-    #set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS")
+    ##set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS")
     
 
     #wxWidgets
@@ -129,7 +129,7 @@ if(WIN32)
         )
     
     add_executable(
-        ${PROJECT_NAME} 
+        ${PROJECT_NAME} WIN32
         ${PROGRAM_SRC}
         )
     
